@@ -6,7 +6,7 @@
 /*   By: goncalo1021pt <goncalo1021pt@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/27 14:02:58 by gfontao-          #+#    #+#             */
-/*   Updated: 2024/04/23 23:47:29 by goncalo1021      ###   ########.fr       */
+/*   Updated: 2025/05/13 23:39:49 by goncalo1021      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,5 +88,12 @@ t_list			*ft_lstmap(t_list *lst, void *(*f)(void *),
 					void (*del)(void *));
 t_list			*ft_lstnew(void *content);
 int				ft_lstsize(t_list *lst);
+
+// fprintf
+int	ft_putnbr_base_fd(int fd, unsigned int nbr, char *base, int total);
+int	ft_putpt_fd(int fd, unsigned long int nbr, char *base, int total);
+int	ft_putnbrt_fd(int fd, int n, int total);
+int	ft_putunbr_fd(int fd, unsigned int n, int total);
+int	ft_fprintf(int fd, const char *str, ...);
 
 #endif

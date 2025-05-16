@@ -1,10 +1,12 @@
 NAME = ft_ls
 
 SRCS = $(addprefix srcs/,$(addsuffix .c, $(S)))
-S = main.c
+S = main
 OBJS = $(addprefix $(OBJS_DIR),$(SRCS:$(SRCS_DIR)%.c=%.o))
 SRCS_DIR = srcs/
 OBJS_DIR = objs/
+HEADERS = -I includes/headers/
+HDRS = $(wildcard includes/headers/*.h)
 
 RM = rm -f
 CFLAGS = -Wall -Wextra -Werror -g
@@ -12,6 +14,9 @@ SFLAGS = -fsanitize=address
 VFLAGS = --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=yes #--suppressions="supression.supp"
 CC = cc
 
+# libft
+LIBFT_DIR = ./includes/libft
+LIBFT = $(LIBFT_DIR)/libft.a
 
 #color codes
 GREEN = \033[0;32m
@@ -20,23 +25,19 @@ BLUE = \033[0;34m
 ORANGE = \033[0;33m
 NC = \033[0m
 
-$(OBJS_DIR)/%.o: $(SRCS_DIR)%.c
-	@mkdir -p $(dir $@)
-	@$(CC) $(CFLAGS) -c $< -o $@
-
 all: $(NAME)
 
-$(OBJS_DIR)/%.o: srcs/%.c
+$(OBJS_DIR)%.o: $(SRCS_DIR)%.c $(HDRS)
 	@mkdir -p $(dir $@)
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
 
-$(OBJS_DIR_S)/%.o: srcs/%.c
+$(OBJS_DIR_S)/%.o: srcs/%.c $(HDRS)
 	@mkdir -p $(dir $@)
-	@$(CC) $(CFLAGS) $(SFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) $(SFLAGS) $(HEADERS) -c $< -o $@
 
 $(NAME): $(OBJS) $(LIBFT)
 	@echo "$(GREEN)$(NAME)$(NC) compiling..."
-	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) 
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) $(HEADERS)
 	@echo "$(GREEN)$(NAME)$(NC) ready!"
 
 $(BONUS_NAME): $(BONUS_OBJS) $(LIBFT)
