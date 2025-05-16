@@ -6,7 +6,7 @@
 /*   By: goncalo1021pt <goncalo1021pt@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/27 14:02:58 by gfontao-          #+#    #+#             */
-/*   Updated: 2025/05/13 23:39:49 by goncalo1021      ###   ########.fr       */
+/*   Updated: 2025/05/16 15:23:16 by goncalo1021      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,5 +95,8 @@ int	ft_putpt_fd(int fd, unsigned long int nbr, char *base, int total);
 int	ft_putnbrt_fd(int fd, int n, int total);
 int	ft_putunbr_fd(int fd, unsigned int n, int total);
 int	ft_fprintf(int fd, const char *str, ...);
+
+// new functions
+void *ft_realloc(void *ptr, size_t old_size, size_t new_size);
 
 #endif

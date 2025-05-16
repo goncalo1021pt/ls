@@ -1,7 +1,6 @@
 NAME = ft_ls
 
-SRCS = $(addprefix srcs/,$(addsuffix .c, $(S)))
-S = main
+SRCS = $(wildcard srcs/*.c)
 OBJS = $(addprefix $(OBJS_DIR),$(SRCS:$(SRCS_DIR)%.c=%.o))
 SRCS_DIR = srcs/
 OBJS_DIR = objs/
