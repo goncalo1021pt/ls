@@ -39,6 +39,15 @@ void print_ls(t_file **files, int n_files, t_options *options) {
 	}
 }
 
+void sort_args(t_file **files, int n_files, t_options *options) {
+	(void)options;
+	for (int ctd = 0; ctd < n_files; ctd++) {
+		if (files[ctd] == NULL)
+			continue;
+		
+	}
+}
+
 int execute_ls(int argc, char **argv, int i, t_options *options) {
 	char *path = ".";
 	int exit_code = 0;
@@ -86,6 +95,7 @@ int execute_ls(int argc, char **argv, int i, t_options *options) {
 		closedir(dir);
 		ctd++;
 	} while (++i < argc);
+	sort_args(files, n_files, options);
 	print_ls(files, n_files, options);
 	clear_files(files, n_files);
 	return exit_code;
