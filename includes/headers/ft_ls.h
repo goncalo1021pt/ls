@@ -13,6 +13,7 @@ typedef struct s_options {
 	bool R;
 	bool t;
 	bool h;
+	int n_args;
 } t_options;
 
 int parse_options(int argc, char **argv, int *index ,t_options *options);

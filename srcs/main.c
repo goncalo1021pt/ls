@@ -55,6 +55,7 @@ int parse_options(int argc, char **argv, int *index ,t_options *options) {
 			break;
 	}
 	*index = i;
+	options->n_args = argc - i;
 	return 0;
 }
 
@@ -79,24 +80,40 @@ int check_option(t_options options) {
 	return 0;
 }
 
-void execute_ls(int argc, char **argv, int i, t_options *options) {
-	(void)argv;
+int execute_ls(int argc, char **argv, int i, t_options *options) {
 	char *path = ".";
-	if (i < argc) {
-		path = argv[i];
-	}
-	DIR *dir = opendir(path);
-	if (dir == NULL) {
-		ft_fprintf(2, "ft_ls: cannot access %s: No such file or directory\n", path);
-		return;
-	}
-	struct dirent *entry;
-	while ((entry = readdir(dir)) != NULL) {
-		if (options->a || entry->d_name[0] != '.') {
-			ft_printf("%s\n", entry->d_name);
+	int start;
+	int exit_code = 0;
+
+	start = i;
+	do {
+		if (argc != 1)
+			path = argv[i];
+		DIR *dir = opendir(path);
+		struct dirent *entry;
+
+		if (dir == NULL) {
+			if (options->n_args > 1) {
+				exit_code = 2;
+				continue;
+			}
+			ft_fprintf(2, "ft_ls: cannot access %s: No such file or directory\n", path);
+			return 2;
 		}
-	}
-	closedir(dir);
+
+		if (i != start) 
+			ft_printf("\n");
+		if (options->n_args > 1) {
+			ft_printf("%s:\n", path);
+		}
+		while ((entry = readdir(dir)) != NULL) {
+			if (options->a || entry->d_name[0] != '.') {
+				ft_printf("%s\n", entry->d_name);
+			}
+		}
+		closedir(dir);
+	} while (++i < argc);
+	return exit_code;
 }
 
 int main(int argc, char **argv)
@@ -107,8 +124,6 @@ int main(int argc, char **argv)
 	init_options(&options);
 	if (parse_options(argc, argv, &i, &options) != 0)
 		return 2;
-	print_options(&options);
 	check_option(options);
-	execute_ls(argc, argv, i, &options);
-	return 0;
+	return execute_ls(argc, argv, i, &options);
 }
