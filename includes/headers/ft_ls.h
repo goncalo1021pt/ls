@@ -6,6 +6,9 @@
 #include <dirent.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <pwd.h>
+#include <grp.h>
+#include <time.h>
 
 typedef struct s_options {
 	bool a;
@@ -17,10 +20,16 @@ typedef struct s_options {
 	int n_args;
 } t_options;
 
+typedef struct s_permissions {
+	char type;
+	char permissions[9];
+} t_permissions;
+
 typedef struct s_file {
 	char *name;
 	char *path;
 	struct stat stat;
+	t_permissions permissions;
 
 	int n_children;
 	struct s_file **children;

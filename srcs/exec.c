@@ -20,6 +20,29 @@ void clear_files(t_file **files, int n_files) {
 	free(files);
 }
 
+void print_lflag(t_file *file) {
+	if (lstat(file->name, &file->stat) == -1) {
+		perror("lstat");
+		return;
+	}
+	ft_printf("%c", file->permissions.type);
+
+	struct passwd *pw = getpwuid(file->stat.st_uid);
+    struct group *gr = getgrgid(file->stat.st_gid);
+
+    // Extract modification time
+    char timebuf[20];
+    struct tm *mtime = localtime(&file->stat.st_mtime);
+    strftime(timebuf, sizeof(timebuf), "%b %d %H:%M", mtime);
+	printf("%ld %s %s %ld %s %s\n",
+		file->stat.st_nlink,                // Number of links
+		pw ? pw->pw_name : "UNKNOWN",       // User name
+		gr ? gr->gr_name : "UNKNOWN",       // Group name
+		file->stat.st_size,                // File size
+		timebuf,                            // Modification time
+		file->name);                        // File name
+}
+
 void print_ls(t_file **files, int n_files, t_options *options) {
 	(void)options;
 	for (int ctd = 0; ctd < n_files; ctd++) {
@@ -29,7 +52,11 @@ void print_ls(t_file **files, int n_files, t_options *options) {
 			ft_printf("%s:\n", files[ctd]->name);
 		if (files[ctd] != NULL) {
 			for (int ctd2 = 0; ctd2 < files[ctd]->n_children; ctd2++) {
-				ft_printf("%s", files[ctd]->children[ctd2]->name);
+				if (options->l) {
+					print_lflag(files[ctd]->children[ctd2]);
+				}
+				else
+					ft_printf("%s", files[ctd]->children[ctd2]->name);
 				if (ctd2 != files[ctd]->n_children - 1)
 					ft_printf(" ");
 			}

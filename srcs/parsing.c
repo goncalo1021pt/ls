@@ -1,15 +1,15 @@
 #include "ft_ls.h"
 
 void print_help() {
-	ft_fprintf(1, "Usage: ft_ls [OPTION]... [FILE]...\n");
-	ft_fprintf(1, "List information about the FILEs (the current directory by default).\n");
-	ft_fprintf(1, "Sort entries alphabetically if none of -cftuSUX nor --sort is specified.\n");
-	ft_fprintf(1, "\nOptions:\n");
-	ft_fprintf(1, "  -a,                  do not ignore entries starting with .\n");
-	ft_fprintf(1, "  -l                   use a long listing format\n");
-	ft_fprintf(1, "  -r                   reverse order while sorting\n");
-	ft_fprintf(1, "  -R                   list subdirectories recursively\n");
-	ft_fprintf(1, "  -t                   sort by time modified\n");
+	ft_printf("Usage: ft_ls [OPTION]... [FILE]...\n");
+	ft_printf("List information about the FILEs (the current directory by default).\n");
+	ft_printf("Sort entries alphabetically if none of -cftuSUX nor --sort is specified.\n");
+	ft_printf("\nOptions:\n");
+	ft_printf("  -a,                  do not ignore entries starting with .\n");
+	ft_printf("  -l                   use a long listing format\n");
+	ft_printf("  -r                   reverse order while sorting\n");
+	ft_printf("  -R                   list subdirectories recursively\n");
+	ft_printf("  -t                   sort by time modified\n");
 	exit(0);
 }
 
