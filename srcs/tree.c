@@ -1,6 +1,6 @@
 #include "ft_ls.h"
 
-t_file *create_tree(char *path, char *name) {
+t_file *create_tree(char *name, char *path) {
 	t_file *file = malloc(sizeof(t_file));
 	if (file == NULL) {
 		perror("malloc");
@@ -12,9 +12,9 @@ t_file *create_tree(char *path, char *name) {
 		free(file);
 		return NULL;
 	}
-	file->path = ft_strjoin(path, name);
+	file->path = ft_strdup(path);
 	if (file->path == NULL) {
-		perror("ft_strjoin");
+		perror("ft_strdup");
 		free(file->name);
 		free(file);
 		return NULL;
@@ -28,7 +28,6 @@ void free_tree(t_file *file) {
 	if (file == NULL)
 		return;
 	free(file->name);
-	free(file->path);
 	for (int i = 0; i < file->n_children; i++) {
 		free_tree(file->children[i]);
 	}
