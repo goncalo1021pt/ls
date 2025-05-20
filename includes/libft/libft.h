@@ -6,7 +6,7 @@
 /*   By: goncalo1021pt <goncalo1021pt@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/27 14:02:58 by gfontao-          #+#    #+#             */
-/*   Updated: 2025/05/16 15:23:16 by goncalo1021      ###   ########.fr       */
+/*   Updated: 2025/05/20 00:37:31 by goncalo1021      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,13 +90,15 @@ t_list			*ft_lstnew(void *content);
 int				ft_lstsize(t_list *lst);
 
 // fprintf
-int	ft_putnbr_base_fd(int fd, unsigned int nbr, char *base, int total);
-int	ft_putpt_fd(int fd, unsigned long int nbr, char *base, int total);
-int	ft_putnbrt_fd(int fd, int n, int total);
-int	ft_putunbr_fd(int fd, unsigned int n, int total);
-int	ft_fprintf(int fd, const char *str, ...);
+int		ft_putnbr_base_fd(int fd, unsigned int nbr, char *base, int total);
+int		ft_putpt_fd(int fd, unsigned long int nbr, char *base, int total);
+int		ft_putnbrt_fd(int fd, int n, int total);
+void	ft_putlnbr_fd(long int n, int fd);
+int		ft_putunbr_fd(int fd, unsigned int n, int total);
+int		ft_fprintf(int fd, const char *str, ...);
 
 // new functions
-void *ft_realloc(void *ptr, size_t old_size, size_t new_size);
+void 	*ft_realloc(void *ptr, size_t old_size, size_t new_size);
+char	*ft_strncat(char *dest, const char *src, size_t n);
 
 #endif

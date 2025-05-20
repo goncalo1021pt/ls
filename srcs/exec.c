@@ -20,27 +20,50 @@ void clear_files(t_file **files, int n_files) {
 	free(files);
 }
 
+void extract_permissions(mode_t mode, char *permissions) {
+	    permissions[0] = (S_ISDIR(mode))  ? 'd' :
+                     (S_ISLNK(mode))  ? 'l' :
+                     (S_ISCHR(mode))  ? 'c' :
+                     (S_ISBLK(mode))  ? 'b' :
+                     (S_ISFIFO(mode)) ? 'p' :
+                     (S_ISSOCK(mode)) ? 's' : '-';
+
+    permissions[1] = (mode & S_IRUSR) ? 'r' : '-';
+    permissions[2] = (mode & S_IWUSR) ? 'w' : '-';
+    permissions[3] = (mode & S_IXUSR) ? ((mode & S_ISUID) ? 's' : 'x') : ((mode & S_ISUID) ? 'S' : '-');
+    permissions[4] = (mode & S_IRGRP) ? 'r' : '-';
+    permissions[5] = (mode & S_IWGRP) ? 'w' : '-';
+    permissions[6] = (mode & S_IXGRP) ? ((mode & S_ISGID) ? 's' : 'x') : ((mode & S_ISGID) ? 'S' : '-');
+    permissions[7] = (mode & S_IROTH) ? 'r' : '-';
+    permissions[8] = (mode & S_IWOTH) ? 'w' : '-';
+    permissions[9] = (mode & S_IXOTH) ? ((mode & S_ISVTX) ? 't' : 'x') : ((mode & S_ISVTX) ? 'T' : '-');
+}
+
 void print_lflag(t_file *file) {
-	if (lstat(file->name, &file->stat) == -1) {
-		perror("lstat");
-		return;
+	char permissions[11];
+	ft_bzero(permissions, 10);
+	extract_permissions(file->stat.st_mode, permissions);
+	struct passwd *pw = getpwuid(file->stat.st_uid); 
+    struct group *gr = getgrgid(file->stat.st_gid); 
+    char *ctimebuf = ctime(&file->stat.st_mtime);
+	char timebuf[20];
+	ft_bzero(timebuf, 20);
+
+	if (ctimebuf) {
+		ft_strncpy(timebuf, ctimebuf + 4, 7);
+		timebuf[7] = '\0';
+		ft_strncat(timebuf, ctimebuf + 20, 4);
+		timebuf[11] = '\0';
 	}
-	ft_printf("%c", file->permissions.type);
-
-	struct passwd *pw = getpwuid(file->stat.st_uid);
-    struct group *gr = getgrgid(file->stat.st_gid);
-
-    // Extract modification time
-    char timebuf[20];
-    struct tm *mtime = localtime(&file->stat.st_mtime);
-    strftime(timebuf, sizeof(timebuf), "%b %d %H:%M", mtime);
-	printf("%ld %s %s %ld %s %s\n",
-		file->stat.st_nlink,                // Number of links
-		pw ? pw->pw_name : "UNKNOWN",       // User name
-		gr ? gr->gr_name : "UNKNOWN",       // Group name
-		file->stat.st_size,                // File size
-		timebuf,                            // Modification time
-		file->name);                        // File name
+	else 
+		ft_strncpy(timebuf, "??? ?? ??:??", 20);
+	
+	ft_printf("%s ", permissions);
+	ft_putlnbr_fd(file->stat.st_nlink, 1);
+	// printf(" %s %s %ld %s %s\n", pw ? pw->pw_name : "UNKNOWN", gr ? gr->gr_name : "UNKNOWN", file->stat.st_size, timebuf, file->name);
+	ft_printf(" %s %s ", pw ? pw->pw_name : "UNKNOWN", gr ? gr->gr_name : "UNKNOWN");
+	ft_putlnbr_fd(file->stat.st_size, 1);
+	ft_printf(" %s %s\n", timebuf, file->name);
 }
 
 void print_ls(t_file **files, int n_files, t_options *options) {
@@ -51,14 +74,29 @@ void print_ls(t_file **files, int n_files, t_options *options) {
 		if (n_files > 1) 
 			ft_printf("%s:\n", files[ctd]->name);
 		if (files[ctd] != NULL) {
+			if (options->l) {
+                long total_blocks = 0;
+                for (int ctd2 = 0; ctd2 < files[ctd]->n_children; ctd2++) {
+                    if (lstat(files[ctd]->children[ctd2]->name, &files[ctd]->children[ctd2]->stat) == -1)
+                        continue;
+                    if (!options->a && files[ctd]->children[ctd2]->name[0] == '.')
+                        continue;
+                    total_blocks += files[ctd]->children[ctd2]->stat.st_blocks;
+                }
+                ft_printf("total "); 
+				ft_putlnbr_fd(total_blocks / 2, 1);
+				ft_printf("\n");
+            }
 			for (int ctd2 = 0; ctd2 < files[ctd]->n_children; ctd2++) {
 				if (options->l) {
 					print_lflag(files[ctd]->children[ctd2]);
 				}
 				else
+				{
 					ft_printf("%s", files[ctd]->children[ctd2]->name);
-				if (ctd2 != files[ctd]->n_children - 1)
-					ft_printf(" ");
+					if (ctd2 != files[ctd]->n_children - 1)
+						ft_printf(" ");
+				}
 			}
 			if (files[ctd]->n_children > 0) 
 				ft_printf("\n");
