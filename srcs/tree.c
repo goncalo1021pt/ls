@@ -28,6 +28,7 @@ void free_tree(t_file *file) {
 	if (file == NULL)
 		return;
 	free(file->name);
+	free(file->path);
 	for (int i = 0; i < file->n_children; i++) {
 		free_tree(file->children[i]);
 	}
