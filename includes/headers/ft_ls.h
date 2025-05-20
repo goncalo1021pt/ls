@@ -20,16 +20,10 @@ typedef struct s_options {
 	int n_args;
 } t_options;
 
-typedef struct s_permissions {
-	char type;
-	char permissions[9];
-} t_permissions;
-
 typedef struct s_file {
 	char *name;
 	char *path;
 	struct stat stat;
-	t_permissions permissions;
 
 	int n_children;
 	struct s_file **children;
@@ -52,6 +46,9 @@ int add_child(t_file *parent, t_file *child);
 // print.c
 void print_ls(t_file **files, int n_files, t_options *options);
 int recursive_print(t_file *file, t_options *options, int n_files, int depth);
+
+// sort.c
+int sort_ls(t_file **files, int n_files, t_options *options);
 
 
 #endif

@@ -1,31 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strncat.c                                       :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: goncalo1021pt <goncalo1021pt@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/20 12:26:43 by goncalo1021       #+#    #+#             */
-/*   Updated: 2025/05/20 12:26:55 by goncalo1021      ###   ########.fr       */
+/*   Created: 2025/05/20 12:31:42 by goncalo1021       #+#    #+#             */
+/*   Updated: 2025/05/20 12:31:43 by goncalo1021      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strncat(char *dest, const char *src, size_t n)
+int	ft_strcmp(const char *s1, const char *s2)
 {
-	char	*od;
 	size_t	ctd;
 
 	ctd = 0;
-	od = dest;
-	dest += ft_strlen(dest);
-	while (ctd < ft_strlen(src) && ctd < n)
-	{
-		*dest = src[ctd];
-		dest++;
+	while (s1[ctd] && s2[ctd] && s1[ctd] == s2[ctd])
 		ctd++;
-	}
-	*dest = '\0';
-	return (od);
+	return ((unsigned char)s1[ctd] - (unsigned char)s2[ctd]);
 }

@@ -67,7 +67,7 @@ int recursive_print(t_file *file, t_options *options, int n_files, int depth) {
 			{
 				ft_printf("%s", file->children[ctd2]->name);
 				if (ctd2 != file->n_children - 1)
-					ft_printf(" ");
+					ft_printf("  ");
 			}
 		}
 		if (file->n_children > 0) 

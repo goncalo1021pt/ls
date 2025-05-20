@@ -1,7 +1,6 @@
 #include "ft_ls.h"
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
 	t_options options;
 	int i = 1;
 

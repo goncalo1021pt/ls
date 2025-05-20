@@ -20,15 +20,6 @@ void clear_files(t_file **files, int n_files) {
 	free(files);
 }
 
-void sort_args(t_file **files, int n_files, t_options *options) {
-	(void)options;
-	for (int ctd = 0; ctd < n_files; ctd++) {
-		if (files[ctd] == NULL)
-			continue;
-		
-	}
-}
-
 int tree_error(char *msg, DIR *dir) {
 	perror(msg);
 	if (dir != NULL)
@@ -51,11 +42,13 @@ int populate_tree(t_file *file, char *path, t_options *options, int depth) {
 			continue;
 		if (entry->d_name[0] == '.' && !options->a)
 			continue;
+
 		char *new_path = ft_strjoin(path, "/");
 		if (new_path == NULL) 
 			return tree_error("ft_strjoin", dir);
 		char *full_path = ft_strjoin(new_path, entry->d_name);
 		free(new_path);
+
 		t_file *child = create_tree(entry->d_name, full_path);
 		if (child == NULL)
 			return tree_error("create_tree", dir);
@@ -93,14 +86,17 @@ int execute_ls(int argc, char **argv, int i, t_options *options) {
 		files[ctd] = create_tree(path, path);
 		exit_code = populate_tree(files[ctd], path, options, 0);
 		if (exit_code != 0) {
-			if (exit_code == 2)
+			if (exit_code == 2) {
+				clear_files(files, n_files);
 				return exit_code;
+			}
 			else
 				continue;
 		}
 		ctd++;
 	} while (++i < argc);
-	sort_args(files, n_files, options);
+	
+	exit_code = sort_ls(files, n_files, options);
 	print_ls(files, n_files, options);
 	clear_files(files, n_files);
 	return exit_code;
