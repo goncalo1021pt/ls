@@ -1,5 +1,15 @@
 #include "ft_ls.h"
 
+int compare_words(const char *str1, const char *str2) {
+	while (*str1 && *str2) {
+		if (ft_tolower(*str1) != ft_tolower(*str2))
+			return (unsigned char)ft_tolower(*str1) - (unsigned char)ft_tolower(*str2);
+		str1++;
+		str2++;
+	}
+	return (unsigned char)*str1 - (unsigned char)*str2;
+}
+
 int compare_func(t_file *file1, t_file *file2, t_options *options) {
 	if (options->t) {
 		if (!options->r) {
@@ -11,9 +21,9 @@ int compare_func(t_file *file1, t_file *file2, t_options *options) {
 		}
 	}
 	if (options->r) {
-		return ft_strcmp(file2->name, file1->name);
+		return compare_words(file2->name, file1->name);
 	}
-	return ft_strcmp(file1->name, file2->name);
+	return compare_words(file1->name, file2->name);
 }
 
 void insertion_sort(t_file *file, t_options *options) {
