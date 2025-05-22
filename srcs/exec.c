@@ -37,33 +37,44 @@ int populate_tree(t_file *file, char *path, t_options *options, int depth) {
 		else
 			return 1;
 	}
-	while ((entry = readdir(dir)) != NULL) {
-		if (entry->d_name[0] == '.' && (entry->d_name[1] == '\0' || (entry->d_name[1] == '.' && entry->d_name[2] == '\0')))
-			continue;
-		if (entry->d_name[0] == '.' && !options->a)
-			continue;
-
-		char *new_path = ft_strjoin(path, "/");
-		if (new_path == NULL) 
-			return tree_error("ft_strjoin", dir);
-		char *full_path = ft_strjoin(new_path, entry->d_name);
-		free(new_path);
-
-		t_file *child = create_tree(entry->d_name, full_path);
+	if (options->d) {
+		t_file *child = create_tree(path, path);
 		if (child == NULL)
 			return tree_error("create_tree", dir);
-		if (add_child(file, child) != 0) 
+		if (add_child(file, child) != 0)
 			return tree_error("add_child", dir);
-
-		if (full_path == NULL) 
-			return tree_error("ft_strjoin", dir);
-		if (lstat(full_path, &child->stat) == -1) 
+		if (lstat(path, &child->stat) == -1)
 			return tree_error("lstat", dir);
+		
+	}
+	else {
+		while ((entry = readdir(dir)) != NULL) {
+			if (entry->d_name[0] == '.' && (entry->d_name[1] == '\0' || (entry->d_name[1] == '.' && entry->d_name[2] == '\0')))
+				continue;
+			if (entry->d_name[0] == '.' && !options->a)
+				continue;
+			char *new_path = ft_strjoin(path, "/");
+			if (new_path == NULL) 
+				return tree_error("ft_strjoin", dir);
+			char *full_path = ft_strjoin(new_path, entry->d_name);
+			free(new_path);
 
-		if (options->R && S_ISDIR(child->stat.st_mode)) {
-			populate_tree(child, full_path, options, depth + 1);
-		}	
-		free(full_path);
+			t_file *child = create_tree(entry->d_name, full_path);
+			if (child == NULL)
+				return tree_error("create_tree", dir);
+			if (add_child(file, child) != 0) 
+				return tree_error("add_child", dir);
+
+			if (full_path == NULL) 
+				return tree_error("ft_strjoin", dir);
+			if (lstat(full_path, &child->stat) == -1) 
+				return tree_error("lstat", dir);
+
+			if (options->R && S_ISDIR(child->stat.st_mode)) {
+				populate_tree(child, full_path, options, depth + 1);
+			}	
+			free(full_path);
+		}
 	}
 	closedir(dir);
 	return 0;
@@ -78,13 +89,21 @@ int execute_ls(int argc, char **argv, int i, t_options *options) {
 
 	if (setup_files(&files, &n_files, i, argc) != 0)
 		return 2;
-
+	if (options->d)
+		n_files = 1;
 	do {
 		if (i != argc)
 			path = argv[i];
 
-		files[ctd] = create_tree(path, path);
-		exit_code = populate_tree(files[ctd], path, options, 0);
+		if (options->d) {
+			if (ctd == 0)
+				files[0] = create_tree(path, path);
+			exit_code = populate_tree(files[0], path, options, 0);
+		}
+		else {
+			files[ctd] = create_tree(path, path);
+			exit_code = populate_tree(files[ctd], path, options, 0);
+		}
 		if (exit_code != 0) {
 			if (exit_code == 2) {
 				clear_files(files, n_files);

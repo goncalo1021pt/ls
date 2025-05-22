@@ -1,13 +1,31 @@
 #include "ft_ls.h"
 
 int compare_words(const char *str1, const char *str2) {
-	while (*str1 && *str2) {
-		if (ft_tolower(*str1) != ft_tolower(*str2))
-			return (unsigned char)ft_tolower(*str1) - (unsigned char)ft_tolower(*str2);
-		str1++;
-		str2++;
+	int diff_index = -1;
+	const char *s1 = str1;
+	const char *s2 = str2;
+
+	while (*s1 && *s2) {
+		int c1 = ft_tolower(*s1);
+		int c2 = ft_tolower(*s2);
+		if (c1 != c2)
+			return c1 - c2;
+		if (diff_index == -1 && *s1 != *s2)
+			diff_index = s1 - str1;
+		s1++;
+		s2++;
 	}
-	return (unsigned char)*str1 - (unsigned char)*str2;
+	if (*s1 || *s2)
+		return (unsigned char)*s1 - (unsigned char)*s2;
+	if (diff_index != -1) {
+		char a = str1[diff_index];
+		char b = str2[diff_index];
+		if (ft_islower(a) && ft_isupper(b))
+			return -1;
+		if (ft_isupper(a) && ft_islower(b))
+			return 1;
+	}
+	return 0;
 }
 
 int compare_func(t_file *file1, t_file *file2, t_options *options) {
@@ -114,6 +132,8 @@ int sort_args(t_file *file, t_options *options, int exit_code) {
 int sort_ls(t_file **files, int n_files, t_options *options) {
 	int exit_code = 0;
 	
+	if (options->f)
+		return exit_code;
 	if (files == NULL || n_files <= 0)
 		return exit_code;
 	for (int ctd = 0; ctd < n_files; ctd++) {

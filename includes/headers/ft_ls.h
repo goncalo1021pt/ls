@@ -9,20 +9,37 @@
 #include <pwd.h>
 #include <grp.h>
 #include <time.h>
+#include <limits.h>
+
+// color codes
+#define RESET       "\033[0m"
+#define DIR_COLOR   "\033[01;34m"
+#define LINK_COLOR  "\033[01;36m"
+#define EXEC_COLOR  "\033[01;32m"
+#define SOCK_COLOR  "\033[01;35m"
+#define FIFO_COLOR  "\033[01;33m"
+#define BLK_COLOR   "\033[01;33;44m"
+#define CHR_COLOR   "\033[01;33;44m"
+#define ORPHAN_COLOR "\033[01;31;40m"
 
 typedef struct s_options {
 	bool a;
+	bool d;
+	bool f;
+	bool g;
 	bool l;
 	bool r;
 	bool R;
 	bool t;
 	bool h;
+	bool u;
 	int n_args;
 } t_options;
 
 typedef struct s_file {
 	char *name;
 	char *path;
+	char *printbuffer;
 	struct stat stat;
 
 	int n_children;
