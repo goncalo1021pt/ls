@@ -14,7 +14,9 @@ void extract_permissions(mode_t mode, char *permissions) {
 }
 
 void set_color(t_file *file, t_options *options) {
-	if (S_ISDIR(file->stat.st_mode) && options->f == false)
+	if (options->f == true)
+		return;
+	if (S_ISDIR(file->stat.st_mode))
 		ft_printf("%s", DIR_COLOR);
 	else if (S_ISLNK(file->stat.st_mode)) {
 		struct stat target_stat;
