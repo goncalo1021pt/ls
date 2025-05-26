@@ -49,8 +49,6 @@ int populate_tree(t_file *file, char *path, t_options *options, int depth) {
 	}
 	else {
 		while ((entry = readdir(dir)) != NULL) {
-			if (entry->d_name[0] == '.' && (entry->d_name[1] == '\0' || (entry->d_name[1] == '.' && entry->d_name[2] == '\0')))
-				continue;
 			if (entry->d_name[0] == '.' && !options->a)
 				continue;
 			char *new_path = ft_strjoin(path, "/");
@@ -71,6 +69,10 @@ int populate_tree(t_file *file, char *path, t_options *options, int depth) {
 				return tree_error("lstat", dir);
 
 			if (options->R && S_ISDIR(child->stat.st_mode)) {
+				if (entry->d_name[0] == '.' && entry->d_name[1] == '\0')
+					continue;
+				if (entry->d_name[0] == '.' && entry->d_name[1] == '.' && entry->d_name[2] == '\0')
+					continue;
 				populate_tree(child, full_path, options, depth + 1);
 			}	
 			free(full_path);

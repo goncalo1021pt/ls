@@ -1,6 +1,12 @@
 #include "ft_ls.h"
 
 int compare_words(const char *str1, const char *str2) {
+	if (str1[0] == '.' && !(str1[1] == '\0' || (str1[1] == '.' && str1[2] == '\0'))) {
+        str1++;
+	}
+    if (str2[0] == '.' && !(str2[1] == '\0' || (str2[1] == '.' && str2[2] == '\0'))) {
+        str2++;
+	}
 	int diff_index = -1;
 	const char *s1 = str1;
 	const char *s2 = str2;
@@ -59,59 +65,55 @@ void insertion_sort(t_file *file, t_options *options) {
 }
 
 int merge_sort(t_file *file, t_options *options) {
-    if (file->n_children < 2)
-        return 0;
+	if (file->n_children < 2)
+		return 0;
 
-    int mid = file->n_children / 2;
-    int n_left = mid;
-    int n_right = file->n_children - mid;
+	int mid = file->n_children / 2;
+	int n_left = mid;
+	int n_right = file->n_children - mid;
 
-    // Allocate left and right arrays
-    t_file **left = malloc(sizeof(t_file *) * n_left);
+	t_file **left = malloc(sizeof(t_file *) * n_left);
 	if (!left)
 		return 2;
-    t_file **right = malloc(sizeof(t_file *) * n_right);
+	t_file **right = malloc(sizeof(t_file *) * n_right);
 	if (!right) {
 		free(left);
 		return 2;
 	}
 
-    // Copy data to left and right
-    for (int i = 0; i < n_left; i++)
-        left[i] = file->children[i];
-    for (int i = 0; i < n_right; i++)
-        right[i] = file->children[mid + i];
+	for (int i = 0; i < n_left; i++)
+		left[i] = file->children[i];
+	for (int i = 0; i < n_right; i++)
+		right[i] = file->children[mid + i];
 
-    // Create temp t_file to use insertion/merge recursively
-    t_file left_file = { .children = left, .n_children = n_left };
-    t_file right_file = { .children = right, .n_children = n_right };
+	t_file left_file = { .children = left, .n_children = n_left };
+	t_file right_file = { .children = right, .n_children = n_right };
 
-    if (n_left < 25)
-        insertion_sort(&left_file, options);
-    else
-        merge_sort(&left_file, options);
+	if (n_left < 25)
+		insertion_sort(&left_file, options);
+	else
+		merge_sort(&left_file, options);
 
-    if (n_right < 25)
-        insertion_sort(&right_file, options);
-    else
-        merge_sort(&right_file, options);
+	if (n_right < 25)
+		insertion_sort(&right_file, options);
+	else
+		merge_sort(&right_file, options);
 
-    // Merge left and right back into file->children
-    int l = 0, r = 0, k = 0;
-    while (l < n_left && r < n_right) {
-        if (compare_func(left[l], right[r], options) <= 0)
-            file->children[k++] = left[l++];
-        else
-            file->children[k++] = right[r++];
-    }
-    while (l < n_left)
-        file->children[k++] = left[l++];
-    while (r < n_right)
-        file->children[k++] = right[r++];
+	int l = 0, r = 0, k = 0;
+	while (l < n_left && r < n_right) {
+		if (compare_func(left[l], right[r], options) <= 0)
+			file->children[k++] = left[l++];
+		else
+			file->children[k++] = right[r++];
+	}
+	while (l < n_left)
+		file->children[k++] = left[l++];
+	while (r < n_right)
+		file->children[k++] = right[r++];
 
-    free(left);
-    free(right);
-    return 0;
+	free(left);
+	free(right);
+	return 0;
 }
 
 int sort_args(t_file *file, t_options *options, int exit_code) {
