@@ -29,8 +29,6 @@ int recursive_print(t_file *file, t_options *options, int n_files, int depth) {
 
 	if (file == NULL)
 		return 0;
-	if (ft_strcmp(file->name, ".") == 0 || ft_strcmp(file->name, "..") == 0)
-		print = false;
 	if ((n_files > 1 || options->R) && options->d == false) {
 		if (print)
 			ft_printf("%s:\n", file->path);

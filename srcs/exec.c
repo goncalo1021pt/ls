@@ -58,21 +58,35 @@ int populate_tree(t_file *file, char *path, t_options *options, int depth) {
 			free(new_path);
 
 			t_file *child = create_tree(entry->d_name, full_path);
-			if (child == NULL)
+			if (child == NULL){
+				free(full_path);
 				return tree_error("create_tree", dir);
-			if (add_child(file, child) != 0) 
+			}
+			if (add_child(file, child) != 0)  {
+				free(full_path);
 				return tree_error("add_child", dir);
+			}
 
-			if (full_path == NULL) 
+			if (full_path == NULL) {
+				free_tree(child);
 				return tree_error("ft_strjoin", dir);
-			if (lstat(full_path, &child->stat) == -1) 
+			}
+
+			if (lstat(full_path, &child->stat) == -1) {
+				free(full_path);
+				free_tree(child);
 				return tree_error("lstat", dir);
+			}
 
 			if (options->R && S_ISDIR(child->stat.st_mode)) {
-				if (entry->d_name[0] == '.' && entry->d_name[1] == '\0')
+				if (entry->d_name[0] == '.' && entry->d_name[1] == '\0') {
+					free(full_path);
 					continue;
-				if (entry->d_name[0] == '.' && entry->d_name[1] == '.' && entry->d_name[2] == '\0')
+				}
+				if (entry->d_name[0] == '.' && entry->d_name[1] == '.' && entry->d_name[2] == '\0') {
+					free(full_path);
 					continue;
+				}
 				populate_tree(child, full_path, options, depth + 1);
 			}	
 			free(full_path);
@@ -101,24 +115,27 @@ int execute_ls(int argc, char **argv, int i, t_options *options) {
 			if (ctd == 0)
 				files[0] = create_tree(path, path);
 			exit_code = populate_tree(files[0], path, options, 0);
-		}
-		else {
+		} else {
 			files[ctd] = create_tree(path, path);
 			exit_code = populate_tree(files[ctd], path, options, 0);
 		}
+
 		if (exit_code != 0) {
 			if (exit_code == 2) {
-				clear_files(files, n_files);
-				return exit_code;
-			}
-			else
+				// Skip the current argument and continue to the next
+				if (!options->d) {
+					free_tree(files[ctd]);
+					files[ctd] = NULL;
+				}
 				continue;
+			}
+		} else {
+			ctd++;
 		}
-		ctd++;
 	} while (++i < argc);
-	
-	exit_code = sort_ls(files, n_files, options);
-	print_ls(files, n_files, options);
-	clear_files(files, n_files);
+
+	exit_code = sort_ls(files, ctd, options); // Use ctd instead of n_files to account for skipped arguments
+	print_ls(files, ctd, options);
+	clear_files(files, ctd);
 	return exit_code;
 }
