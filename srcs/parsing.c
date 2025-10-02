@@ -3,13 +3,18 @@
 void print_help() {
 	ft_printf("Usage: ft_ls [OPTION]... [FILE]...\n");
 	ft_printf("List information about the FILEs (the current directory by default).\n");
-	ft_printf("Sort entries alphabetically if none of -cftuSUX nor --sort is specified.\n");
+	ft_printf("Sort entries alphabetically if none of -t is specified.\n");
 	ft_printf("\nOptions:\n");
-	ft_printf("  -a,                  do not ignore entries starting with .\n");
+	ft_printf("  -a                   do not ignore entries starting with .\n");
+	ft_printf("  -d                   list directories themselves, not their contents\n");
+	ft_printf("  -f                   do not sort, enable -a\n");
+	ft_printf("  -g                   like -l, but do not list owner\n");
 	ft_printf("  -l                   use a long listing format\n");
 	ft_printf("  -r                   reverse order while sorting\n");
 	ft_printf("  -R                   list subdirectories recursively\n");
 	ft_printf("  -t                   sort by time modified\n");
+	ft_printf("  -u                   with -lt: sort by, and show, access time\n");
+	ft_printf("      --help           display this help and exit\n");
 	exit(0);
 }
 
