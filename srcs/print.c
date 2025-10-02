@@ -28,7 +28,7 @@ int recursive_print(t_file *file, t_options *options, int n_files, int depth) {
 	bool print = true;
 
 	if (file == NULL)
-		return 0;
+		return 1;
 	if ((n_files > 1 || options->R) && options->d == false) {
 		if (print)
 			ft_printf("%s:\n", file->path);
@@ -84,7 +84,10 @@ int recursive_print(t_file *file, t_options *options, int n_files, int depth) {
 }
 
 void print_ls(t_file **files, int n_files, t_options *options) {
+	int exit_code = 0;
 	for (int ctd = 0; ctd < n_files; ctd++) {
-		recursive_print(files[ctd], options, n_files, 0);
+		exit_code = recursive_print(files[ctd], options, n_files, 0);
+		if (ctd != n_files - 1 && exit_code == 0)
+			ft_printf("\n");
 	}
 }
