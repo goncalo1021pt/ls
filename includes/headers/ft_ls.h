@@ -10,6 +10,7 @@
 #include <grp.h>
 #include <time.h>
 #include <limits.h>
+#include <sys/ioctl.h>
 
 // color codes
 #define RESET       "\033[0m"

@@ -24,70 +24,91 @@ void set_color(t_file *file, t_options *options) {
 		ft_printf("%s", CHR_COLOR);
 }
 
-int recursive_print(t_file *file, t_options *options, int n_files, int depth) {
-	bool print = true;
+static void print_header(t_file *file, bool should_print_header) {
+	if (should_print_header)
+		ft_printf("%s:\n", file->path);
+}
 
+static void print_total_blocks(t_file *file, t_options *options) {
+	if (!(options->l || options->g))
+		return;
+	
+	long total_blocks = 0;
+	for (int i = 0; i < file->n_children; i++) {
+		if (!options->a && ft_strncmp(file->children[i]->name, ".", 1) == 0)
+			continue;
+		total_blocks += file->children[i]->stat.st_blocks;
+	}
+	ft_printf("total %ld\n", total_blocks / 2);
+}
+
+static void print_file_entry(t_file *file, t_options *options, t_widths *w, bool is_last) {
+	if (options->l || options->g) {
+		print_lflag(file, options, w);
+		if (!is_last)
+			ft_printf("\n");
+	} else {
+		set_color(file, options);
+		ft_printf("%s%s", file->name, RESET);
+		if (!is_last)
+			ft_printf("  ");
+	}
+}
+
+static void print_directory_contents(t_file *file, t_options *options) {
+	if (file->n_children == 0)
+		return;
+	
+	t_widths w;
+	if (options->l || options->g)
+		get_column_widths(&file, 1, &w, options);
+	
+	print_total_blocks(file, options);
+	
+	for (int i = 0; i < file->n_children; i++) {
+		bool is_last = (i == file->n_children - 1);
+		print_file_entry(file->children[i], options, &w, is_last);
+	}
+	ft_printf("\n");
+}
+
+static bool should_recurse_into(t_file *file, t_options *options) {
+	if (!options->R || !S_ISDIR(file->stat.st_mode))
+		return false;
+	if (ft_strncmp(file->name, ".", 2) == 0 || ft_strncmp(file->name, "..", 3) == 0)
+		return false;
+	return true;
+}
+
+int recursive_print(t_file *file, t_options *options, int n_files, int depth) {
 	if (file == NULL)
 		return 1;
-	if ((n_files > 1 || options->R) && options->d == false) {
-		if (print)
-			ft_printf("%s:\n", file->path);
-	}
-	if (file != NULL) {
-		t_widths w;
-		if (options->l || options->g) {
-			get_column_widths(&file, 1, &w, options);
-
-			long total_blocks = 0;
-			for (int ctd2 = 0; ctd2 < file->n_children; ctd2++) {
-				if (!options->a && file->children[ctd2]->name[0] == '.' && file->children[ctd2]->name[1] != '\0')
-					continue;
-				total_blocks += file->children[ctd2]->stat.st_blocks;
-			}
-			ft_printf("total "); 
-			ft_putlnbr_fd(total_blocks / 2, 1);
-			ft_printf("\n");
-		}
-		for (int ctd2 = 0; ctd2 < file->n_children; ctd2++) {
-			if (options->l || options->g) {
-				print_lflag(file->children[ctd2], options, &w);
-				if (ctd2 != file->n_children - 1)
-					ft_printf("\n");
-			}
-			else
-			{
-				set_color(file->children[ctd2], options);
-				ft_printf("%s", file->children[ctd2]->name);
-				ft_printf("%s", RESET);
-				if (ctd2 != file->n_children - 1)
-					ft_printf("  ");
-			}
-		}
-		if (file->n_children > 0)
-			ft_printf("\n");
-	}
+	
+	bool should_print_header = (n_files > 1 || options->R) && !options->d;
+	
+	print_header(file, should_print_header);
+	print_directory_contents(file, options);
+	
 	if (options->R) {
-		for (int ctd2 = 0; ctd2 < file->n_children; ctd2++) {
-			if (file->children[ctd2] != NULL && S_ISDIR(file->children[ctd2]->stat.st_mode)) {
-				if (print) {
-					if (file->children[ctd2]->name[0] == '.' && file->children[ctd2]->name[1] == '\0')
-						continue;
-					if (file->children[ctd2]->name[0] == '.' && file->children[ctd2]->name[1] == '.' && file->children[ctd2]->name[2] == '\0')
-						continue;
+		bool first_subdir = true;
+		for (int i = 0; i < file->n_children; i++) {
+			if (should_recurse_into(file->children[i], options)) {
+				if (first_subdir && should_print_header) {
 					ft_printf("\n");
+					first_subdir = false;
 				}
-				recursive_print(file->children[ctd2], options, file->children[ctd2]->n_children, depth + 1);
+				recursive_print(file->children[i], options, file->children[i]->n_children, depth + 1);
 			}
 		}
 	}
+	
 	return 0;
 }
 
 void print_ls(t_file **files, int n_files, t_options *options) {
-	int exit_code = 0;
-	for (int ctd = 0; ctd < n_files; ctd++) {
-		exit_code = recursive_print(files[ctd], options, n_files, 0);
-		if (ctd != n_files - 1 && exit_code == 0)
+	for (int i = 0; i < n_files; i++) {
+		recursive_print(files[i], options, n_files, 0);
+		if (i != n_files - 1)
 			ft_printf("\n");
 	}
 }

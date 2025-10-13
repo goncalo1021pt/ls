@@ -79,11 +79,15 @@ int populate_tree(t_file *file, char *path, t_options *options, int depth) {
 			}
 
 			if (options->R && S_ISDIR(child->stat.st_mode)) {
-				if (entry->d_name[0] == '.' && entry->d_name[1] == '\0') {
+				if (ft_strncmp(child->name, ".", 2) == 0) {
 					free(full_path);
 					continue;
 				}
-				if (entry->d_name[0] == '.' && entry->d_name[1] == '.' && entry->d_name[2] == '\0') {
+				if (ft_strncmp(child->name, "..", 3) == 0) {
+					free(full_path);
+					continue;
+				}
+				if (S_ISLNK(child->stat.st_mode)) {
 					free(full_path);
 					continue;
 				}
@@ -122,7 +126,6 @@ int execute_ls(int argc, char **argv, int i, t_options *options) {
 
 		if (exit_code != 0) {
 			if (exit_code == 2) {
-				// Skip the current argument and continue to the next
 				if (!options->d) {
 					free_tree(files[ctd]);
 					files[ctd] = NULL;
@@ -134,7 +137,7 @@ int execute_ls(int argc, char **argv, int i, t_options *options) {
 		}
 	} while (++i < argc);
 
-	exit_code = sort_ls(files, ctd, options); // Use ctd instead of n_files to account for skipped arguments
+	exit_code = sort_ls(files, ctd, options);
 	print_ls(files, ctd, options);
 	clear_files(files, ctd);
 	return exit_code;
