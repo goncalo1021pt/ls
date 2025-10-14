@@ -11,6 +11,8 @@
 #include <time.h>
 #include <limits.h>
 #include <sys/ioctl.h>
+#include <errno.h>
+#include <string.h>
 
 // color codes
 #define RESET       "\033[0m"
@@ -54,7 +56,6 @@ typedef struct s_widths {
 	int size;
 } t_widths;
 
-
 // parsing.c
 int parse_options(int argc, char **argv, int *index ,t_options *options);
 int check_option(t_options options);
@@ -62,7 +63,7 @@ void print_options(t_options *options);
 void print_help(void);
 
 // exec.c
-int execute_ls(int argc, char **argv, int i, t_options *options);
+int execute_ls(int argc, char **argv, int index, t_options *options);
 
 // tree.c
 t_file *create_tree(char *name, char *path);
@@ -70,7 +71,8 @@ void free_tree(t_file *file);
 int add_child(t_file *parent, t_file *child);
 
 // print.c
-void print_ls(t_file **files, int n_files, t_options *options);
+void print_ls_old(t_file **files, int n_files, t_options *options);
+int print_ls(t_file *file, t_options *options, bool header);
 int recursive_print(t_file *file, t_options *options, int n_files, int depth);
 void set_color(t_file *file, t_options *options);
 void extract_permissions(mode_t mode, char *permissions);
@@ -80,7 +82,8 @@ void print_lflag(t_file *file, t_options *options, t_widths *w);
 void get_column_widths(t_file **files, int n_files, t_widths *w, t_options *options);
 
 // sort.c
-int sort_ls(t_file **files, int n_files, t_options *options);
+int sort_ls_old(t_file **files, int n_files, t_options *options);
+int sort_ls(t_file *file, t_options *options);
 
 
 #endif

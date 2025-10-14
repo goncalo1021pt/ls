@@ -130,8 +130,18 @@ int sort_args(t_file *file, t_options *options, int exit_code) {
 	return exit_code;
 }
 
+static int sort_dir(t_file *file, t_options *options, int exit_code) {
+	if (file == NULL || file->n_children <= 0)
+		return exit_code;
+	if (file->n_children  > 0 && file->n_children < 25) 
+		insertion_sort(file, options);
+	else 
+		exit_code = merge_sort(file, options);
+	return exit_code;
+}
 
-int sort_ls(t_file **files, int n_files, t_options *options) {
+
+int sort_ls_old(t_file **files, int n_files, t_options *options) {
 	int exit_code = 0;
 	
 	if (options->f)
@@ -141,5 +151,14 @@ int sort_ls(t_file **files, int n_files, t_options *options) {
 	for (int ctd = 0; ctd < n_files; ctd++) {
 		exit_code = sort_args(files[ctd], options , exit_code);
 	}
+	return exit_code;
+}
+
+int sort_ls(t_file *file, t_options *options) {
+	int exit_code = 0;
+	
+	if (options->f)
+		return exit_code;
+	exit_code = sort_dir(file, options , exit_code);
 	return exit_code;
 }
