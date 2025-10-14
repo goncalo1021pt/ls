@@ -158,4 +158,4 @@ This project is part of the 42 school curriculum, focusing on system programming
 
 ## Author
 
-Created as part of 42 School specialization curriculum.
+Gonçalo Pereira
