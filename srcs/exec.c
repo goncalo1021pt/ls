@@ -1,6 +1,6 @@
 #include "ft_ls.h"
 
-int setup_files(t_file ***files, int *n_files, int start_index, int argc) {
+/* int setup_files(t_file ***files, int *n_files, int start_index, int argc) {
 	if (start_index == argc)
 		*n_files = 1;
 	else
@@ -11,7 +11,7 @@ int setup_files(t_file ***files, int *n_files, int start_index, int argc) {
 		return 2;
 	}
 	return 0;
-}
+} */
 
 void clear_files(t_file **files, int n_files) {
 	for (int ctd = 0; ctd < n_files; ctd++) {
@@ -20,14 +20,14 @@ void clear_files(t_file **files, int n_files) {
 	free(files);
 }
 
-int tree_error(char *msg, DIR *dir) {
+/* int tree_error(char *msg, DIR *dir) {
 	perror(msg);
 	if (dir != NULL)
 		closedir(dir);
 	return 2;
-}
+} */
 
-int populate_tree(t_file *file, char *path, t_options *options, int depth) {
+/* int populate_tree(t_file *file, char *path, t_options *options, int depth) {
 	struct dirent *entry;
 	DIR *dir = opendir(path);
 	if (dir == NULL) {
@@ -98,7 +98,7 @@ int populate_tree(t_file *file, char *path, t_options *options, int depth) {
 	}
 	closedir(dir);
 	return 0;
-}
+} */
 
 /* int execute_ls_old(int argc, char **argv, int i, t_options *options) {
 	char *path = ".";
@@ -237,13 +237,13 @@ int load_dir_entries(t_file *file ,char *path, t_options *options) {
 			free_tree(child);
 			continue;
 		}
-
 		if (add_child(file, child) != 0) {
 			free(full_path);
 			free_tree(child);
 			closedir(dir);
 			return 2;
 		}
+		free(full_path);
 	}
 	closedir(dir);
 	return 0;
@@ -280,6 +280,8 @@ int execute_tree(t_file *file, char *path, t_options *options, int depth, bool m
 				if (S_ISLNK(file->children[ctd]->stat.st_mode))
 					continue;
 				tmp_code = execute_tree(file->children[ctd], file->children[ctd]->path, options, depth + 1, multiple_paths);
+				free_tree(file->children[ctd]);
+				file->children[ctd] = NULL;
 				if (tmp_code > exit_code)
 					exit_code = tmp_code;
 			}
