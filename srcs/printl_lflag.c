@@ -13,7 +13,7 @@ void extract_permissions(mode_t mode, char *permissions) {
 	permissions[9] = (mode & S_IXOTH) ? ((mode & S_ISVTX) ? 't' : 'x') : ((mode & S_ISVTX) ? 'T' : '-');
 }
 
-int count_digits_unsigned(unsigned long n) {
+static int count_digits_unsigned(unsigned long n) {
     int count = 1;
     while (n >= 10) {
         n /= 10;
@@ -22,8 +22,8 @@ int count_digits_unsigned(unsigned long n) {
     return count;
 }
 
-int count_digits_signed(long long n) {
-    int count = (n < 0) ? 2 : 1; // 1 for digit, +1 for minus sign if negative
+static int count_digits_signed(long long n) {
+    int count = (n < 0) ? 2 : 1;
     if (n < 0) n = -n;
     while (n >= 10) {
         n /= 10;
@@ -32,7 +32,7 @@ int count_digits_signed(long long n) {
     return count;
 }
 
-void ulong_to_str(unsigned long n, char *buf) {
+static void ulong_to_str(unsigned long n, char *buf) {
     int len = count_digits_unsigned(n);
     buf[len] = '\0';
     while (len--) {
@@ -41,7 +41,7 @@ void ulong_to_str(unsigned long n, char *buf) {
     }
 }
 
-void llong_to_str(long long n, char *buf) {
+static void llong_to_str(long long n, char *buf) {
     int neg = n < 0;
     unsigned long long un = neg ? -n : n;
     int len = count_digits_signed(n);
@@ -53,7 +53,7 @@ void llong_to_str(long long n, char *buf) {
     if (neg) buf[0] = '-';
 }
 
-void print_padded_number(long n, int width)
+static void print_padded_number(long n, int width)
 {
 	char buf[32];
 	llong_to_str(n, buf);
@@ -63,7 +63,7 @@ void print_padded_number(long n, int width)
 	ft_putstr_fd(buf, 1);
 }
 
-void print_padded_string(char *s, int width)
+static void print_padded_string(char *s, int width)
 {
 	int len = ft_strlen(s);
 	ft_putstr_fd(s, 1);

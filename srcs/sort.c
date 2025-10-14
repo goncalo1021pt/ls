@@ -1,6 +1,6 @@
 #include "ft_ls.h"
 
-int compare_words(const char *str1, const char *str2) {
+static int compare_words(const char *str1, const char *str2) {
 	if (str1[0] == '.' && !(str1[1] == '\0' || (str1[1] == '.' && str1[2] == '\0'))) {
         str1++;
 	}
@@ -34,7 +34,7 @@ int compare_words(const char *str1, const char *str2) {
 	return 0;
 }
 
-int compare_func(t_file *file1, t_file *file2, t_options *options) {
+static int compare_func(t_file *file1, t_file *file2, t_options *options) {
 	if (options->t) {
 		if (!options->r) {
 			if (file1->stat.st_mtime != file2->stat.st_mtime)
@@ -50,7 +50,7 @@ int compare_func(t_file *file1, t_file *file2, t_options *options) {
 	return compare_words(file1->name, file2->name);
 }
 
-void insertion_sort(t_file *file, t_options *options) {
+static void insertion_sort(t_file *file, t_options *options) {
 	
 	for (int ctd = 1; ctd < file->n_children; ++ctd) {
 		t_file *key = file->children[ctd];
@@ -64,7 +64,7 @@ void insertion_sort(t_file *file, t_options *options) {
 	}
 }
 
-int merge_sort(t_file *file, t_options *options) {
+static int merge_sort(t_file *file, t_options *options) {
 	if (file->n_children < 2)
 		return 0;
 
@@ -116,20 +116,6 @@ int merge_sort(t_file *file, t_options *options) {
 	return 0;
 }
 
-int sort_args(t_file *file, t_options *options, int exit_code) {
-	if (file == NULL || file->n_children <= 0)
-		return exit_code;
-	if (file->n_children  > 0 && file->n_children < 25) 
-		insertion_sort(file, options);
-	else 
-		exit_code = merge_sort(file, options);
-	for (int ctd = 0; ctd < file->n_children && options->R; ctd++) {
-		if (file->children[ctd] != NULL && S_ISDIR(file->children[ctd]->stat.st_mode))
-			sort_args(file->children[ctd], options, exit_code);
-	}
-	return exit_code;
-}
-
 static int sort_dir(t_file *file, t_options *options, int exit_code) {
 	if (file == NULL || file->n_children <= 0)
 		return exit_code;
@@ -137,20 +123,6 @@ static int sort_dir(t_file *file, t_options *options, int exit_code) {
 		insertion_sort(file, options);
 	else 
 		exit_code = merge_sort(file, options);
-	return exit_code;
-}
-
-
-int sort_ls_old(t_file **files, int n_files, t_options *options) {
-	int exit_code = 0;
-	
-	if (options->f)
-		return exit_code;
-	if (files == NULL || n_files <= 0)
-		return exit_code;
-	for (int ctd = 0; ctd < n_files; ctd++) {
-		exit_code = sort_args(files[ctd], options , exit_code);
-	}
 	return exit_code;
 }
 

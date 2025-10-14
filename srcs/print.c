@@ -55,23 +55,6 @@ static void print_file_entry(t_file *file, t_options *options, t_widths *w, bool
 	}
 }
 
-static void print_directory_contents_old(t_file *file, t_options *options) {
-	if (file->n_children == 0)
-		return;
-	
-	t_widths w;
-	if (options->l || options->g)
-		get_column_widths(&file, 1, &w, options);
-	
-	print_total_blocks(file, options);
-	
-	for (int i = 0; i < file->n_children; i++) {
-		bool is_last = (i == file->n_children - 1);
-		print_file_entry(file->children[i], options, &w, is_last);
-	}
-	ft_printf("\n");
-}
-
 static void print_directory_contents(t_file *file, t_options *options) {
 	if (file->n_children == 0)
 		return;
@@ -88,47 +71,6 @@ static void print_directory_contents(t_file *file, t_options *options) {
 	}
 	ft_printf("\n");
 }
-
-/* static bool should_recurse_into(t_file *file, t_options *options) {
-	if (!options->R || !S_ISDIR(file->stat.st_mode))
-		return false;
-	if (ft_strncmp(file->name, ".", 2) == 0 || ft_strncmp(file->name, "..", 3) == 0)
-		return false;
-	return true;
-} */
-
-/* int recursive_print(t_file *file, t_options *options, int n_files, int depth) {
-	if (file == NULL)
-		return 1;
-	
-	bool should_print_header = (n_files > 1 || options->R) && !options->d;
-	
-	print_header(file, should_print_header);
-	print_directory_contents(file, options);
-	
-	if (options->R) {
-		bool first_subdir = true;
-		for (int i = 0; i < file->n_children; i++) {
-			if (should_recurse_into(file->children[i], options)) {
-				if (first_subdir && should_print_header) {
-					ft_printf("\n");
-					first_subdir = false;
-				}
-				recursive_print(file->children[i], options, file->children[i]->n_children, depth + 1);
-			}
-		}
-	}
-	
-	return 0;
-} */
-
-/* void print_ls_old(t_file **files, int n_files, t_options *options) {
-	for (int i = 0; i < n_files; i++) {
-		recursive_print(files[i], options, n_files, 0);
-		if (i != n_files - 1)
-			ft_printf("\n");
-	}
-} */
 
 int print_ls(t_file *file, t_options *options, bool header) {
 	if (file == NULL)

@@ -71,9 +71,7 @@ void free_tree(t_file *file);
 int add_child(t_file *parent, t_file *child);
 
 // print.c
-void print_ls_old(t_file **files, int n_files, t_options *options);
 int print_ls(t_file *file, t_options *options, bool header);
-int recursive_print(t_file *file, t_options *options, int n_files, int depth);
 void set_color(t_file *file, t_options *options);
 void extract_permissions(mode_t mode, char *permissions);
 
@@ -82,7 +80,6 @@ void print_lflag(t_file *file, t_options *options, t_widths *w);
 void get_column_widths(t_file **files, int n_files, t_widths *w, t_options *options);
 
 // sort.c
-int sort_ls_old(t_file **files, int n_files, t_options *options);
 int sort_ls(t_file *file, t_options *options);
 
 
