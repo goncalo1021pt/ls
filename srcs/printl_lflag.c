@@ -105,12 +105,14 @@ void print_lflag(t_file *file, t_options *options, t_widths *w) {
 	extract_permissions(file->stat.st_mode, permissions);
 	struct passwd *pw = getpwuid(file->stat.st_uid); 
 	struct group *gr = getgrgid(file->stat.st_gid); 
-	char *ctimebuf = ctime(&file->stat.st_mtime);
+	
+	time_t display_time = options->u ? file->stat.st_atime : file->stat.st_mtime;
+	char *ctimebuf = ctime(&display_time);
 	char timebuf[20];
 	ft_bzero(timebuf, 20);
 
 	if (ctimebuf) {
-		if (is_current_year(file->stat.st_mtime)) {
+		if (is_current_year(display_time)) {
 			ft_strncpy(timebuf, ctimebuf + 4, 7);
 			timebuf[7] = '\0';
 			ft_strncat(timebuf, ctimebuf + 11, 5);
@@ -139,7 +141,8 @@ void print_lflag(t_file *file, t_options *options, t_widths *w) {
 	ft_printf("%s ", timebuf);
 	set_color(file, options);
 	ft_printf("%s", file->name);
-	ft_printf("%s", RESET);
+	if (options->f != true && options->is_tty)
+		ft_printf("%s", RESET);
 	if (S_ISLNK(file->stat.st_mode)) {
 		char link_target[PATH_MAX + 1];
 		ssize_t len = readlink(file->path, link_target, PATH_MAX);

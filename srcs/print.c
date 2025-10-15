@@ -1,8 +1,9 @@
 #include "ft_ls.h"
 
 void set_color(t_file *file, t_options *options) {
-	if (options->f == true)
+	if (options->f == true || !options->is_tty)
 		return;
+
 	if (S_ISDIR(file->stat.st_mode)) {
 		if (file->stat.st_mode & S_ISVTX)
 			ft_printf("%s", STICKY_COLOR);
@@ -61,7 +62,10 @@ static void print_file_entry(t_file *file, t_options *options, t_widths *w, bool
 			ft_printf("\n");
 	} else {
 		set_color(file, options);
-		ft_printf("%s%s", file->name, RESET);
+		ft_printf("%s", file->name);
+		// Only print RESET if output is to a terminal (same condition as set_color)
+		if (options->f != true && options->is_tty)
+			ft_printf("%s", RESET);
 		if (!is_last)
 			ft_printf("  ");
 	}

@@ -21,6 +21,7 @@ void print_help() {
 int parse_options(int argc, char **argv, int *index ,t_options *options) {
 	int i = 1;
 
+	options->is_tty = isatty(STDOUT_FILENO);
 	for (; i < argc; i++) {
 		if (argv[i][0] == '-' && argv[i][1] != '\0') {
 			for (int ctd = 1; argv[i][ctd] != '\0'; ctd++) {

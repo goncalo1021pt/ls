@@ -13,6 +13,7 @@
 #include <sys/ioctl.h>
 #include <errno.h>
 #include <string.h>
+#include <unistd.h>
 
 // color codes
 #define RESET       "\033[0m"
@@ -39,6 +40,7 @@ typedef struct s_options {
 	bool t;
 	bool h;
 	bool u;
+	bool is_tty;
 	int n_args;
 } t_options;
 

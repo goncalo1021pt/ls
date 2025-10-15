@@ -35,13 +35,23 @@ static int compare_words(const char *str1, const char *str2) {
 }
 
 static int compare_func(t_file *file1, t_file *file2, t_options *options) {
-	if (options->t) {
-		if (!options->r) {
-			if (file1->stat.st_mtime != file2->stat.st_mtime)
-				return file2->stat.st_mtime - file1->stat.st_mtime;
+	if (options->t || (options->u && !options->l)) {
+		time_t time1, time2;
+		
+		if (options->u) {
+			time1 = file1->stat.st_atime;
+			time2 = file2->stat.st_atime;
 		} else {
-			if (file1->stat.st_mtime != file2->stat.st_mtime)
-				return file1->stat.st_mtime - file2->stat.st_mtime;
+			time1 = file1->stat.st_mtime;
+			time2 = file2->stat.st_mtime;
+		}
+		
+		if (!options->r) {
+			if (time1 != time2)
+				return time2 - time1;
+		} else {
+			if (time1 != time2)
+				return time1 - time2;
 		}
 	}
 	if (options->r) {
