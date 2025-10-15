@@ -76,7 +76,7 @@ int load_dir_entries(t_file *file ,char *path, t_options *options) {
 		return (errno == EACCES) ? 2 : 2; 
 	}
 	while ((entry = readdir(dir)) != NULL) {
-		if (!options->a && entry->d_name[0] == '.')
+		if (!options->a && !options->f && entry->d_name[0] == '.')
 			continue;
 		
 		char *new_path = ft_strjoin(path, "/");

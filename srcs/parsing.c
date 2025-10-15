@@ -24,7 +24,7 @@ int parse_options(int argc, char **argv, int *index ,t_options *options) {
 	for (; i < argc; i++) {
 		if (argv[i][0] == '-' && argv[i][1] != '\0') {
 			for (int ctd = 1; argv[i][ctd] != '\0'; ctd++) {
-				if (argv[i][ctd] == 'a' || argv[i][ctd] == 'f')
+				if (argv[i][ctd] == 'a')
 					options->a = true;
 				else if (argv[i][ctd] == 'l')
 					options->l = true;
