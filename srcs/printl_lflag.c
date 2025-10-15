@@ -94,10 +94,9 @@ void get_column_widths(t_file **files, int n_files, t_widths *w, t_options *opti
 }
 
 static int is_current_year(time_t file_time) {
-	struct tm *file_tm = localtime(&file_time);
-	time_t now = time(NULL);
-	struct tm *now_tm = localtime(&now);
-	return (file_tm && now_tm && file_tm->tm_year == now_tm->tm_year);
+    time_t now = time(NULL);
+    time_t six_months_ago = now - (6 * 30 * 24 * 60 * 60);
+    return (file_time > six_months_ago && file_time <= now);
 }
 
 void print_lflag(t_file *file, t_options *options, t_widths *w) {

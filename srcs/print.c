@@ -39,7 +39,9 @@ static void print_total_blocks(t_file *file, t_options *options) {
 			continue;
 		total_blocks += file->children[i]->stat.st_blocks;
 	}
-	ft_printf("total %ld\n", total_blocks / 2);
+	ft_printf("total ");
+	ft_putlnbr_fd(total_blocks / 2, 1);
+	ft_printf("\n");
 }
 
 static void print_file_entry(t_file *file, t_options *options, t_widths *w, bool is_last) {

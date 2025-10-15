@@ -175,7 +175,10 @@ int execute_ls(int argc, char **argv, int index, t_options *options) {
 			int temp_code = execute_tree(file, path, options, 0, multiple_paths);
 			if (temp_code > exit_code)
 				exit_code = temp_code;
-
+			if (temp_code != 0) {
+				free_tree(file);
+				continue;
+			}
 		}
 		free_tree(file);
 		if (index < argc - 1)
