@@ -3,8 +3,12 @@
 void set_color(t_file *file, t_options *options) {
 	if (options->f == true)
 		return;
-	if (S_ISDIR(file->stat.st_mode))
-		ft_printf("%s", DIR_COLOR);
+	if (S_ISDIR(file->stat.st_mode)) {
+		if (file->stat.st_mode & S_ISVTX)
+			ft_printf("%s", STICKY_COLOR);
+		else
+			ft_printf("%s", DIR_COLOR);
+	}
 	else if (S_ISLNK(file->stat.st_mode)) {
 		struct stat target_stat;
 		if (stat(file->path, &target_stat) == -1)
@@ -12,8 +16,14 @@ void set_color(t_file *file, t_options *options) {
 		else
 			ft_printf("%s", LINK_COLOR);
 	}
-	else if (S_ISREG(file->stat.st_mode) && file->stat.st_mode & S_IXUSR)
-		ft_printf("%s", EXEC_COLOR);
+	else if (S_ISREG(file->stat.st_mode)) {
+		if (file->stat.st_mode & S_ISUID)
+			ft_printf("%s", SUID_COLOR);
+		else if (file->stat.st_mode & S_ISGID)
+			ft_printf("%s", SGID_COLOR);
+		else if (file->stat.st_mode & S_IXUSR)
+			ft_printf("%s", EXEC_COLOR);
+	}
 	else if (S_ISSOCK(file->stat.st_mode))
 		ft_printf("%s", SOCK_COLOR);
 	else if (S_ISFIFO(file->stat.st_mode))

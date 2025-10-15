@@ -20,10 +20,13 @@
 #define LINK_COLOR  "\033[01;36m"
 #define EXEC_COLOR  "\033[01;32m"
 #define SOCK_COLOR  "\033[01;35m"
-#define FIFO_COLOR  "\033[01;33m"
+#define FIFO_COLOR  "\033[40;33m"
 #define BLK_COLOR   "\033[01;33;44m"
 #define CHR_COLOR   "\033[01;33;44m"
-#define ORPHAN_COLOR "\033[01;31;40m"
+#define ORPHAN_COLOR "\033[40;31;01m"
+#define SUID_COLOR  "\033[37;41m"     // White text on red background
+#define SGID_COLOR  "\033[30;43m"     // Black text on yellow background
+#define STICKY_COLOR "\033[30;42m"    // Black text on green background
 
 typedef struct s_options {
 	bool a;
