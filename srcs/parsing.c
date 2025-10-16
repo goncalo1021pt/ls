@@ -43,6 +43,8 @@ int parse_options(int argc, char **argv, int *index ,t_options *options) {
 					options->g = true;
 				else if (argv[i][ctd] == 'u')
 					options->u = true;
+				else if (argv[i][ctd] == '1')
+					options->one = true;
 				else if (argv[i][ctd] == '-') {
 					printf("options: %s\n", &argv[i][ctd]);
 					if (ft_strnstr("-help", &argv[i][ctd], 6) != NULL) 

@@ -93,10 +93,11 @@ void get_column_widths(t_file **files, int n_files, t_widths *w, t_options *opti
 	}
 }
 
-static int is_current_year(time_t file_time) {
+static int should_show_time(time_t file_time) {
     time_t now = time(NULL);
     time_t six_months_ago = now - (6 * 30 * 24 * 60 * 60);
-    return (file_time > six_months_ago && file_time <= now);
+    time_t six_months_future = now + (6 * 30 * 24 * 60 * 60);
+    return (file_time > six_months_ago && file_time < six_months_future);
 }
 
 void print_lflag(t_file *file, t_options *options, t_widths *w) {
@@ -112,16 +113,17 @@ void print_lflag(t_file *file, t_options *options, t_widths *w) {
 	ft_bzero(timebuf, 20);
 
 	if (ctimebuf) {
-		if (is_current_year(display_time)) {
+		if (should_show_time(display_time)) {
 			ft_strncpy(timebuf, ctimebuf + 4, 7);
 			timebuf[7] = '\0';
 			ft_strncat(timebuf, ctimebuf + 11, 5);
 			timebuf[12] = '\0';
 		} else {
-			ft_strncpy(timebuf, ctimebuf + 4, 7);
-			timebuf[7] = '\0';
+			ft_strncpy(timebuf, ctimebuf + 4, 6);
+			timebuf[6] = '\0';
+			ft_strncat(timebuf, "  ", 2);
 			ft_strncat(timebuf, ctimebuf + 20, 4);
-			timebuf[11] = '\0';
+			timebuf[12] = '\0';
 		}
 	}
 	else 

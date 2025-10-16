@@ -60,10 +60,14 @@ static void print_file_entry(t_file *file, t_options *options, t_widths *w, bool
 		print_lflag(file, options, w);
 		if (!is_last)
 			ft_printf("\n");
+	} else if (options->one || options->is_tty == false) {
+		set_color(file, options);
+		ft_printf("%s\n", file->name);
+		if (options->f != true && options->is_tty)
+			ft_printf("%s", RESET);
 	} else {
 		set_color(file, options);
 		ft_printf("%s", file->name);
-		// Only print RESET if output is to a terminal (same condition as set_color)
 		if (options->f != true && options->is_tty)
 			ft_printf("%s", RESET);
 		if (!is_last)
@@ -85,7 +89,8 @@ static void print_directory_contents(t_file *file, t_options *options) {
 		bool is_last = (i == file->n_children - 1);
 		print_file_entry(file->children[i], options, &w, is_last);
 	}
-	ft_printf("\n");
+	if (!(options->one || options->is_tty == false))
+		ft_printf("\n");
 }
 
 int print_ls(t_file *file, t_options *options, bool header) {

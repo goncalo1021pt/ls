@@ -40,6 +40,7 @@ typedef struct s_options {
 	bool t;
 	bool h;
 	bool u;
+	bool one;
 	bool is_tty;
 	int n_args;
 } t_options;
