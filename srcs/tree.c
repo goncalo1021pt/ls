@@ -41,7 +41,6 @@ int add_child(t_file *parent, t_file *child) {
 	if (parent == NULL || child == NULL)
 		return -1;
 	
-	// Check if we need to grow the children array
 	if (parent->n_children >= parent->children_capacity) {
 		int new_capacity = parent->children_capacity == 0 ? 16 : parent->children_capacity * 2;
 		t_file **new_children = realloc(parent->children, sizeof(t_file *) * new_capacity);

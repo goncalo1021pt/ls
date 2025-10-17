@@ -25,9 +25,9 @@
 #define BLK_COLOR   "\033[01;33;44m"
 #define CHR_COLOR   "\033[01;33;44m"
 #define ORPHAN_COLOR "\033[40;31;01m"
-#define SUID_COLOR  "\033[37;41m"     // White text on red background
-#define SGID_COLOR  "\033[30;43m"     // Black text on yellow background
-#define STICKY_COLOR "\033[30;42m"    // Black text on green background
+#define SUID_COLOR  "\033[37;41m"
+#define SGID_COLOR  "\033[30;43m"
+#define STICKY_COLOR "\033[30;42m"
 
 typedef struct s_options {
 	bool a;
