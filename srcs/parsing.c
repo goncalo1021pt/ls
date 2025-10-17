@@ -18,10 +18,23 @@ void print_help() {
 	exit(0);
 }
 
+int get_terminal_width() {
+	struct winsize w;
+	if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == -1) {
+		return 80; 
+	}
+	return w.ws_col;
+}
+
+void get_tty_info(t_options *options) {
+	options->is_tty = isatty(STDOUT_FILENO);
+	options->tty_width = get_terminal_width();
+}
+
 int parse_options(int argc, char **argv, int *index ,t_options *options) {
 	int i = 1;
 
-	options->is_tty = isatty(STDOUT_FILENO);
+	get_tty_info(options);
 	for (; i < argc; i++) {
 		if (argv[i][0] == '-' && argv[i][1] != '\0') {
 			for (int ctd = 1; argv[i][ctd] != '\0'; ctd++) {
@@ -77,6 +90,22 @@ void print_options(t_options *options) {
 		ft_printf("Option R is set\n");
 	if (options->t)
 		ft_printf("Option t is set\n");
+	if (options->d)
+		ft_printf("Option d is set\n");
+	if (options->f)
+		ft_printf("Option f is set\n");
+	if (options->g)
+		ft_printf("Option g is set\n");
+	if (options->u)
+		ft_printf("Option u is set\n");
+	if (options->one)
+		ft_printf("Option 1 is set\n");
+	if (options->h)
+		ft_printf("Option h is set\n");
+	if (options->is_tty)
+		ft_printf("Output is to a terminal with width %d\n", options->tty_width);
+	else
+		ft_printf("Output is not to a terminal\n");
 }
 
 int check_option(t_options options) {

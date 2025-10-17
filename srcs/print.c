@@ -85,6 +85,14 @@ static void print_directory_contents(t_file *file, t_options *options) {
 	
 	print_total_blocks(file, options);
 	
+	if (options->is_tty && !(options->l || options->g || options->one)) {
+		int total_width = get_total_widths(file, options);
+		if (total_width > options->tty_width && count_visible_files(file, options) > 1) {
+			print_columns(file, options);
+			return;
+		}
+	}
+	
 	for (int i = 0; i < file->n_children; i++) {
 		bool is_last = (i == file->n_children - 1);
 		print_file_entry(file->children[i], options, &w, is_last);

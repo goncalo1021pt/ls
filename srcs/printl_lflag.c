@@ -14,43 +14,34 @@ void extract_permissions(mode_t mode, char *permissions) {
 }
 
 static int count_digits_unsigned(unsigned long n) {
-    int count = 1;
-    while (n >= 10) {
-        n /= 10;
-        count++;
-    }
-    return count;
+	int count = 1;
+	while (n >= 10) {
+		n /= 10;
+		count++;
+	}
+	return count;
 }
 
 static int count_digits_signed(long long n) {
-    int count = (n < 0) ? 2 : 1;
-    if (n < 0) n = -n;
-    while (n >= 10) {
-        n /= 10;
-        count++;
-    }
-    return count;
-}
-
-static void ulong_to_str(unsigned long n, char *buf) {
-    int len = count_digits_unsigned(n);
-    buf[len] = '\0';
-    while (len--) {
-        buf[len] = '0' + (n % 10);
-        n /= 10;
-    }
+	int count = (n < 0) ? 2 : 1;
+	if (n < 0) n = -n;
+	while (n >= 10) {
+		n /= 10;
+		count++;
+	}
+	return count;
 }
 
 static void llong_to_str(long long n, char *buf) {
-    int neg = n < 0;
-    unsigned long long un = neg ? -n : n;
-    int len = count_digits_signed(n);
-    buf[len] = '\0';
-    while (len--) {
-        buf[len] = '0' + (un % 10);
-        un /= 10;
-    }
-    if (neg) buf[0] = '-';
+	int neg = n < 0;
+	unsigned long long un = neg ? -n : n;
+	int len = count_digits_signed(n);
+	buf[len] = '\0';
+	while (len--) {
+		buf[len] = '0' + (un % 10);
+		un /= 10;
+	}
+	if (neg) buf[0] = '-';
 }
 
 static void print_padded_number(long n, int width)
@@ -94,10 +85,10 @@ void get_column_widths(t_file **files, int n_files, t_widths *w, t_options *opti
 }
 
 static int should_show_time(time_t file_time) {
-    time_t now = time(NULL);
-    time_t six_months_ago = now - (6 * 30 * 24 * 60 * 60);
-    time_t six_months_future = now + (6 * 30 * 24 * 60 * 60);
-    return (file_time > six_months_ago && file_time < six_months_future);
+	time_t now = time(NULL);
+	time_t six_months_ago = now - (6 * 30 * 24 * 60 * 60);
+	time_t six_months_future = now + (6 * 30 * 24 * 60 * 60);
+	return (file_time > six_months_ago && file_time < six_months_future);
 }
 
 void print_lflag(t_file *file, t_options *options, t_widths *w) {

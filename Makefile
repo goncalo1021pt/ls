@@ -8,7 +8,7 @@ HEADERS = -I includes/headers/
 HDRS = $(wildcard includes/headers/*.h)
 
 RM = rm -f
-CFLAGS = #-Wall -Wextra -Werror -g -o3
+CFLAGS = -Wall -Wextra -Werror -g
 SFLAGS = -fsanitize=address
 VFLAGS = --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=yes #--suppressions="supression.supp"
 CC = cc
@@ -66,7 +66,7 @@ fclean: clean
 	@echo "$(RED)$(NAME)$(NC) cleaned!"
 
 v: re
-	valgrind $(VFLAGS) ./$(NAME)
+	valgrind $(VFLAGS) ./$(NAME) 
 
 fcount:
 	@echo "you wrote $(RED)$(shell cat $(SRCS) | wc -l)$(NC)lines of code"

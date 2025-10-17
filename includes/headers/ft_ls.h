@@ -42,6 +42,7 @@ typedef struct s_options {
 	bool u;
 	bool one;
 	bool is_tty;
+	int tty_width;
 	int n_args;
 } t_options;
 
@@ -52,6 +53,7 @@ typedef struct s_file {
 	struct stat stat;
 
 	int n_children;
+	int children_capacity;
 	struct s_file **children;
 } t_file;
 
@@ -61,6 +63,13 @@ typedef struct s_widths {
 	int group;
 	int size;
 } t_widths;
+
+typedef struct s_column_info {
+	int max_width;
+	int num_columns;
+	int num_rows;
+	int *column_widths;
+} t_column_info;
 
 // parsing.c
 int parse_options(int argc, char **argv, int *index ,t_options *options);
@@ -80,6 +89,11 @@ int add_child(t_file *parent, t_file *child);
 int print_ls(t_file *file, t_options *options, bool header);
 void set_color(t_file *file, t_options *options);
 void extract_permissions(mode_t mode, char *permissions);
+
+// print_colums.c
+void print_columns(t_file *parent, t_options *options);
+int get_total_widths(t_file *parent, t_options *options);
+int count_visible_files(t_file *parent, t_options *options);
 
 // print_lflag.c
 void print_lflag(t_file *file, t_options *options, t_widths *w);

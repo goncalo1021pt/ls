@@ -1,3 +1,9 @@
+# Project executable
+ft_ls
+
+# Object files directory
+objs/
+
 # Prerequisites
 *.d
 
@@ -50,3 +56,24 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Personal notes
+notas.txt
+*.notes
+
+# Test files (if you want to keep them local)
+# test_ls_colors/
+
+# macOS
+.DS_Store
+
+# Valgrind output
+vgcore.*
+*.log
