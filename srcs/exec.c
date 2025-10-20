@@ -15,7 +15,7 @@ int execute_dflag(int argc, char **argv, int index, t_options *options) {
 	}
 
 	int exit_code = 0;
-
+	bool print = false;
 	if (index == argc) {
 		t_file *child = create_tree(".", ".");
 		if (child == NULL) {
@@ -50,19 +50,27 @@ int execute_dflag(int argc, char **argv, int index, t_options *options) {
 				continue; 
 			}
 			
+			if (options->d == false && S_ISDIR(child->stat.st_mode)) {
+				free_tree(child);
+				continue;
+			}
+
 			if (add_child(parent, child) != 0) {
 				free_tree(child);
 				free_tree(parent);
 				return 2;
 			}
+			print = true;
 		}
 	}
-	
+
+
 	int sort_result = sort_ls(parent, options);
 	if (sort_result > exit_code)
 		exit_code = sort_result;
 	
-	print_ls(parent, options, false);
+	if (print || options->d)
+		print_ls(parent, options, false);
 	
 	free_tree(parent);
 	return exit_code;
@@ -156,51 +164,39 @@ int execute_tree(t_file *file, char *path, t_options *options, int depth, bool m
 
 int execute_ls(int argc, char **argv, int index, t_options *options) {
 	int exit_code = 0;
-	
-	if (index < argc) {
-		int temp_code = execute_dflag(argc, argv, index, options);
-		if (temp_code > exit_code)
-			exit_code = temp_code;
-		if (options->d == true)
-			return exit_code;
-		
-		bool first_dir = true;
-		for (int i = index; i < argc; i++) {
-			struct stat file_stat;
-			if (lstat(argv[i], &file_stat) == -1)
-				continue;
-			if (S_ISDIR(file_stat.st_mode)) {
-				if (!first_dir || exit_code == 0) {
-					ft_printf("\n");
-				}
-				first_dir = false;
-				t_file *file = create_tree(argv[i], argv[i]);
-				if (file == NULL) {
-					perror("create_tree");
-					exit_code = 2;
-					continue;
-				}
-				
-				int temp_code = execute_tree(file, argv[i], options, 0, true);
-				if (temp_code > exit_code)
-					exit_code = temp_code;
-				
-				free_tree(file);
-			}
-		}
-		return exit_code;
-	}
-	char *path = ".";
-	t_file *file = create_tree(path, path);
-	if (file == NULL) {
-		perror("create_tree");
-		return 2;
-	}
-	
-	int temp_code = execute_tree(file, path, options, 0, false);
+	bool multiple_paths = index + 1 < argc;
+
+	int temp_code = execute_dflag(argc, argv, index, options);
 	if (temp_code > exit_code)
 		exit_code = temp_code;
+	if (options->d == true)
+		return exit_code;
 	
-	free_tree(file);
+	bool first_dir = true;
+	int i = index;
+	do {
+		if (i >= argc)
+			argv[i] = ".";
+		struct stat file_stat;
+		if (lstat(argv[i], &file_stat) == -1)
+			continue;
+		if (S_ISDIR(file_stat.st_mode)) {
+			if (!first_dir || multiple_paths) {
+				ft_printf("\n");
+			}
+			first_dir = false;
+			t_file *file = create_tree(argv[i], argv[i]);
+			if (file == NULL) {
+				perror("create_tree");
+				exit_code = 2;
+				continue;
+			}
+			int temp_code = execute_tree(file, argv[i], options, 0, multiple_paths);
+			if (temp_code > exit_code)
+				exit_code = temp_code;
+			
+			free_tree(file);
+		}
+	} while(++i < argc);
 	return exit_code;
 }
