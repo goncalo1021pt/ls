@@ -53,6 +53,7 @@ static int compare_func(t_file *file1, t_file *file2, t_options *options) {
 			if (time1 != time2)
 				return time1 - time2;
 		}
+		return 0;
 	}
 	if (options->r) {
 		return compare_words(file2->name, file1->name);
